@@ -29,3 +29,10 @@ def prepare_returns_matrix(df_wide, tickers):
     )
     df_long = df_long.dropna(subset=['log_return'])
     return df_long.pivot(index='Date', columns='ticker', values='log_return')[available].dropna()
+
+def prepare_macro(df_wide):
+    """Extract macro columns and forward-fill."""
+    macro_cols = [c for c in config.MACRO_COLS if c in df_wide.columns]
+    macro_df = df_wide[['Date'] + macro_cols].copy()
+    macro_df = macro_df.set_index('Date').ffill().dropna()
+    return macro_df
